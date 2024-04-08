@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    webLLMGlobal = {}
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Agent Interface Test Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet" href="get_started.css">
+</head>
+<body>
+<label id="init-label"> </label>
+<div class="description">
+    Type in the input box below to see the Web Agent Interface in action.<br>
+    The highlighted text will be used as the context of the prompt.<br>
+    Use Ctrl + W to show the chat assistant.
+</div>
+
+<div contenteditable="true" id="largeTextArea">Start typing here</textarea>
+
+</body>
+<script type="module" src="./get_started.ts"></script>
+</html>
