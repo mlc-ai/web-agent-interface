@@ -7,10 +7,7 @@ import {
   InitProgressCallback,
 } from "@mlc-ai/web-llm";
 import { ChatBox } from "../environment";
-// @ts-ignore
-import * as rangy from 'rangy'
-// @ts-ignore
-import 'rangy/lib/rangy-selectionsaverestore'
+import rangy from 'rangy';
 
 export interface EditingAbilityConfig {
   // Triggering conditions
@@ -26,12 +23,14 @@ export class EditingAbility extends Ability {
   config: EditingAbilityConfig;
   chatBox?: ChatBox;
   selector?: string;
-  savedSelection?: any;
+  selectedText?: any;
 
   constructor(config: EditingAbilityConfig) {
     super(AbilityTypeEnum.Editing, [
       ActionType.GetSelectedText,
-      ActionType.ReplaceSelectedText,
+      ActionType.HighlightSelectedText,
+      ActionType.RemoveAllHighlights,
+      ActionType.ReplaceHighlightedText,
       ActionType.CreateChatBox,
       ActionType.InitChat,
       ActionType.ChatCompletion,
@@ -59,25 +58,23 @@ export class EditingAbility extends Ability {
     if (!selectedText) {
       return;
     }
+    this.selectedText = selectedText;
+    await this.callBindedAction(ActionType.RemoveAllHighlights);
+    await this.callBindedAction(ActionType.HighlightSelectedText);
 
-    this.savedSelection = rangy.saveSelection();
     // Only one chatbox is allowed at a time
     if (!this.chatBox) {
       this.chatBox = await this.callBindedAction(
         ActionType.CreateChatBox,
         selector,
         async (input: string, chatBox: ChatBox) => {
-          rangy.restoreSelection(this.savedSelection, true);
-          const text = await this.callBindedAction(
-            ActionType.GetSelectedText,
-            selector
-          );
           const request: ChatCompletionRequest = {
             stream: false,
             messages: [
               {
                 role: "user",
-                content: `Use the following context when answering the question at the end.\nContext: ${text}\n\nQuestion: ${input}`,
+                content: `Use the following context when answering the question at the end.\n
+                Context: ${this.selectedText}\n\nQuestion: ${input}`,
               },
             ],
           };
@@ -91,16 +88,16 @@ export class EditingAbility extends Ability {
           }
         },
         async (output: string, chatBox: ChatBox) => {
-          rangy.restoreSelection(this.savedSelection, true);
           this.callBindedAction(
-            ActionType.ReplaceSelectedText,
-            output,
-            selector
+            ActionType.ReplaceHighlightedText,
+            output
           );
           chatBox.hide();
+          await this.callBindedAction(ActionType.RemoveAllHighlights);
         },
-        (chatBox: ChatBox) => {
+        async (chatBox: ChatBox) => {
           chatBox.hide();
+          await this.callBindedAction(ActionType.RemoveAllHighlights);
         }
       );
       this.selector = selector;

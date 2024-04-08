@@ -2,8 +2,13 @@ import { Environment, EnvironmentTypeEnum } from "./environment";
 import { ActionType } from "../action";
 import { ChatBox } from "./chatbox";
 
+import rangy from 'rangy';
+import 'rangy/lib/rangy-highlighter';
+import 'rangy/lib/rangy-classapplier';
+
 export class DOMTreeEnvironment extends Environment {
   metadata?: Record<string, any>;
+  highlighter?: any;
 
   constructor(metadata?: Record<string, any>) {
     super(EnvironmentTypeEnum.DomTree);
@@ -11,6 +16,15 @@ export class DOMTreeEnvironment extends Environment {
     this.registerLowLevelActions();
     this.registerTextActions();
     this.registerCreateChatBoxAction();
+    rangy.init();
+    this.highlighter = rangy.createHighlighter();
+    this.highlighter.addClassApplier(rangy.createClassApplier("wai-highlight", {
+      ignoreWhiteSpace: true,
+      tagNames: ["span"],
+  }));
+    const styleSheet = document.createElement('style');
+    styleSheet.innerText = '.wai-highlight { background: lightgrey; }';
+    document.head.appendChild(styleSheet);
   }
 
   private registerLowLevelActions() {
@@ -22,78 +36,58 @@ export class DOMTreeEnvironment extends Environment {
 
   private registerTextActions() {
     this.registerAction(ActionType.GetSelectedText, (selector?: string) => {
-      const element = selector
-        ? (document.querySelector(selector) as HTMLElement)
-        : document;
-      let selectedText = null;
-      if (
-        element instanceof HTMLInputElement ||
-        element instanceof HTMLTextAreaElement
-      ) {
-        const start = element.selectionStart;
-        const end = element.selectionEnd;
-        if (start !== null && end !== null && start !== end) {
-          selectedText = element.value.substring(start, end);
-        }
-      } else {
-        const selection = window.getSelection();
-        if (selection && selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0);
-          if (
-            element.contains(range.commonAncestorContainer) ||
-            element.contains(range.startContainer) ||
-            element.contains(range.endContainer)
-          ) {
-            selectedText = selection.toString();
-          }
-        }
-      }
-      return selectedText;
+      return rangy.getSelection().toString();
     });
 
     this.registerAction(
       ActionType.ReplaceSelectedText,
       (replacementText: string, selector?: string) => {
-        let replaced = false;
-        const element = selector
-          ? (document.querySelector(selector) as HTMLElement)
-          : document;
-        if (
-          element instanceof HTMLInputElement ||
-          element instanceof HTMLTextAreaElement
-        ) {
-          const start = element.selectionStart;
-          const end = element.selectionEnd;
-          if (start !== null && end !== null && start !== end) {
-            element.value =
-              element.value.substring(0, start) +
-              replacementText +
-              element.value.substring(end);
-            // Optionally, adjust the cursor position after replacement
-            element.selectionStart = element.selectionEnd =
-              start + replacementText.length;
-            replaced = true;
-          }
-        } else {
-          const selection = window.getSelection();
-          if (selection && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            if (
-              element.contains(range.commonAncestorContainer) ||
-              element.contains(range.startContainer) ||
-              element.contains(range.endContainer)
-            ) {
-              range.deleteContents();
-              range.insertNode(document.createTextNode(replacementText));
-              // Collapse the range to the end point of the insertion to mimic typical user input behavior
-              selection.collapseToEnd();
-              replaced = true;
-            }
-          }
+        const sel = rangy.getSelection();
+        if (sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(replacementText));
+          return true;
         }
-        return replaced;
+        return false;
       },
     );
+
+    this.registerAction(
+      ActionType.HighlightSelectedText,
+      () => {
+        const sel = rangy.getSelection();
+        if (sel.rangeCount > 0) {
+          this.highlighter.highlightSelection("wai-highlight");
+        }
+      },
+    )
+
+    this.registerAction(
+      ActionType.RemoveAllHighlights,
+      () => {
+        this.highlighter.removeAllHighlights();
+        // Ensure that we don't have any remaining highlighted elements
+        const highlightedElements: NodeListOf<HTMLElement> = document.querySelectorAll('.wai-highlight');
+        highlightedElements.forEach((element) => {
+          const docFragment: DocumentFragment = document.createDocumentFragment();
+          while (element.firstChild) {
+            docFragment.appendChild(element.firstChild);
+          }      
+          element.parentNode?.replaceChild(docFragment, element);
+        });
+      },
+    );
+
+    this.registerAction(
+      ActionType.ReplaceHighlightedText,
+      (replacementText: string) => {
+        const highlightedElements: NodeListOf<HTMLElement> = document.querySelectorAll('.wai-highlight');
+        highlightedElements.forEach((element) => {
+          element.innerText = replacementText;
+        });
+      },
+    )
   }
 
   private registerClickAction() {

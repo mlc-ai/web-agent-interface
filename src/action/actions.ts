@@ -19,6 +19,9 @@ export enum ActionType {
   // High-level actions
   GetSelectedText,
   ReplaceSelectedText,
+  HighlightSelectedText,
+  RemoveAllHighlights,
+  ReplaceHighlightedText,
 
   // Chat-related actions
   InitChat,
@@ -82,6 +85,12 @@ export type ReplaceSelectedTextAction = (
   selector?: string
 ) => boolean;
 
+export type HighlightSelectedTextAction = () => void;
+
+export type RemoveAllHighlightsAction = () => void;
+
+export type ReplaceHighlightedTextAction = (replace_text: string) => void;
+
 /**
  * Initialize a chat session with the model
  *
@@ -119,6 +128,9 @@ export type ActionFunctionMap = {
 
   [ActionType.GetSelectedText]: GetSelectedTextAction;
   [ActionType.ReplaceSelectedText]: ReplaceSelectedTextAction;
+  [ActionType.HighlightSelectedText]: HighlightSelectedTextAction;
+  [ActionType.RemoveAllHighlights]: RemoveAllHighlightsAction;
+  [ActionType.ReplaceHighlightedText]: ReplaceHighlightedTextAction;
 
   [ActionType.InitChat]: InitChatAction;
   [ActionType.ChatCompletion]: ChatCompletionAction;
