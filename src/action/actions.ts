@@ -98,6 +98,7 @@ export type ReplaceHighlightedTextAction = (replace_text: string) => void;
  * @param chatOpts The web-llm chat options
  */
 export type InitChatAction = (
+  worker: Worker,
   modelId: string,
   chatOpts?: ChatOptions,
   initProgressCallback?: InitProgressCallback

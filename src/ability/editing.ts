@@ -1,7 +1,7 @@
 import { Ability, AbilityTypeEnum, UITrigger } from "./ability";
 import { ActionType } from "../action";
 import {
-  ChatCompletion,
+  ChatCompletionChunk,
   ChatCompletionRequest,
   ChatOptions,
   InitProgressCallback,
@@ -14,6 +14,7 @@ export interface EditingAbilityConfig {
   uiTriggers: UITrigger[];
 
   // Chat related configs
+  worker: Worker,
   modelId: string;
   chatOptions?: ChatOptions;
   initProgressCallback?: InitProgressCallback;
@@ -44,6 +45,7 @@ export class EditingAbility extends Ability {
     rangy.init();
     this.callBindedAction(
       ActionType.InitChat,
+      this.config.worker,
       this.config.modelId,
       this.config.chatOptions,
       this.config.initProgressCallback
@@ -69,7 +71,7 @@ export class EditingAbility extends Ability {
         selector,
         async (input: string, chatBox: ChatBox) => {
           const request: ChatCompletionRequest = {
-            stream: false,
+            stream: true,
             messages: [
               {
                 role: "user",
@@ -81,10 +83,14 @@ export class EditingAbility extends Ability {
           const completion = (await this.callBindedAction(
             ActionType.ChatCompletion,
             request
-          )) as ChatCompletion;
-          const responseMessage = completion.choices[0].message.content;
-          if (responseMessage) {
-            chatBox.setOutputText(responseMessage);
+          )) as AsyncIterable<ChatCompletionChunk>;
+
+          let message = "";
+          for await (const chunk of completion) {
+            if (chunk.choices[0].delta.content) {
+              message += chunk.choices[0].delta.content;
+            }
+            chatBox.setOutputText(message);
           }
         },
         async (output: string, chatBox: ChatBox) => {
@@ -93,10 +99,12 @@ export class EditingAbility extends Ability {
             output
           );
           chatBox.hide();
+          chatBox.clearInputAndOutput();
           await this.callBindedAction(ActionType.RemoveAllHighlights);
         },
         async (chatBox: ChatBox) => {
           chatBox.hide();
+          chatBox.clearInputAndOutput();
           await this.callBindedAction(ActionType.RemoveAllHighlights);
         }
       );

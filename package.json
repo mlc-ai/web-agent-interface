@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/mlc-ai/web-agent-interface#readme",
   "devDependencies": {
-    "@mlc-ai/web-llm": "^0.2.30",
+    "@mlc-ai/web-llm": "^0.2.35",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-node-resolve": "^15.2.3",

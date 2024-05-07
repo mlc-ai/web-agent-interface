@@ -20,6 +20,7 @@ async function main() {
         wai.AbilityTypeEnum.Editing,
         {
           modelId: "Llama-2-7b-chat-hf-q4f16_1-1k",
+          worker: new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
           uiTriggers: [
             {
               eventType: "keydown",

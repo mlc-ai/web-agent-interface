@@ -68,6 +68,7 @@ export class ChatBox extends HTMLElement {
     discardButton.addEventListener("click", () => {
       this.onDiscard(this);
     });
+    this.clearInputAndOutput();
 
     // Insert the element to the selector if it's not already there
     if (!this.isConnected) {
@@ -82,6 +83,9 @@ export class ChatBox extends HTMLElement {
   private handleSubmit() {
     if (this.chatInput && this.chatInput.value.trim()) {
       this.onSubmit(this.chatInput.value, this);
+    }
+    if (this.chatOutput) {
+      this.chatOutput.style.display = "block";
     }
   }
 
@@ -117,6 +121,16 @@ export class ChatBox extends HTMLElement {
   setOutputText(text: string): void {
     if (this.chatOutput) {
       this.chatOutput.innerText = text;
+    }
+  }
+
+  clearInputAndOutput(): void {
+    if (this.chatInput) {
+      this.chatInput.value = "";
+    }
+    if (this.chatOutput) {
+      this.chatOutput.innerText = "";
+      this.chatOutput.style.display = "none";
     }
   }
 }

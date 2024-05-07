@@ -2,13 +2,14 @@ import { Environment, EnvironmentTypeEnum } from "./environment";
 import { ActionType } from "../action";
 import {
   ChatCompletionRequest,
-  ChatModule,
+  CreateWebWorkerEngine,
+  EngineInterface,
   ChatOptions,
   InitProgressCallback,
 } from "@mlc-ai/web-llm";
 
 export class ChatEnvironment extends Environment {
-  cm?: ChatModule;
+  engine?: EngineInterface;
 
   constructor() {
     super(EnvironmentTypeEnum.Chat);
@@ -20,19 +21,24 @@ export class ChatEnvironment extends Environment {
     this.registerAction(
       ActionType.InitChat,
       async (
+        worker: Worker,
         modelId: string,
         chatOpts?: ChatOptions,
-        initProgressCallback?: InitProgressCallback,
+        initProgressCallback?: InitProgressCallback
       ) => {
-        if (this.cm) {
+        if (this.engine) {
           return;
         }
-        this.cm = new ChatModule();
-        if (initProgressCallback) {
-          this.cm.setInitProgressCallback(initProgressCallback);
-        }
-        await this.cm.reload(modelId, chatOpts);
-      },
+        this.engine = await CreateWebWorkerEngine(
+          worker,
+          modelId,
+          {
+            chatOpts: chatOpts,
+            initProgressCallback: initProgressCallback,
+          }
+        );
+        console.log("Engine initialized");
+      }
     );
   }
 
@@ -40,14 +46,14 @@ export class ChatEnvironment extends Environment {
     this.registerAction(
       ActionType.ChatCompletion,
       async (request: ChatCompletionRequest) => {
-        if (!this.cm) {
+        if (!this.engine) {
           throw new Error(
-            "Chat module is not initialized. Please call InitChat first.",
+            "Engine is not initialized, or intialization is in progress. Please call InitChat first."
           );
         }
-        const reply = await this.cm.chatCompletion(request);
+        const reply = await this.engine.chat.completions.create(request);
         return reply;
-      },
+      }
     );
   }
 }
