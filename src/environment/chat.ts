@@ -2,14 +2,14 @@ import { Environment, EnvironmentTypeEnum } from "./environment";
 import { ActionType } from "../action";
 import {
   ChatCompletionRequest,
-  CreateWebWorkerEngine,
-  EngineInterface,
+  CreateWebWorkerMLCEngine,
+  MLCEngineInterface,
   ChatOptions,
   InitProgressCallback,
 } from "@mlc-ai/web-llm";
 
 export class ChatEnvironment extends Environment {
-  engine?: EngineInterface;
+  engine?: MLCEngineInterface;
 
   constructor() {
     super(EnvironmentTypeEnum.Chat);
@@ -29,10 +29,14 @@ export class ChatEnvironment extends Environment {
         if (this.engine) {
           return;
         }
-        this.engine = await CreateWebWorkerEngine(worker, modelId, {
-          chatOpts: chatOpts,
-          initProgressCallback: initProgressCallback,
-        });
+        this.engine = await CreateWebWorkerMLCEngine(
+          worker,
+          modelId,
+          {
+            initProgressCallback: initProgressCallback,
+          },
+          chatOpts,
+        );
         console.log("Engine initialized");
       },
     );

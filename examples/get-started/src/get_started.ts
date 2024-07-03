@@ -19,7 +19,7 @@ async function main() {
       [
         wai.AbilityTypeEnum.Editing,
         {
-          modelId: "Llama-2-7b-chat-hf-q4f16_1-1k",
+          modelId: "Llama-3-8B-Instruct-q4f16_1-MLC",
           worker: new Worker(new URL("./worker.ts", import.meta.url), {
             type: "module",
           }),

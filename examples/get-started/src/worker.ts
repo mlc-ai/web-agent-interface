@@ -1,8 +1,6 @@
-import { EngineWorkerHandler, Engine } from "@mlc-ai/web-llm";
+import { WebWorkerMLCEngineHandler } from "@mlc-ai/web-llm";
 
-// Hookup an engine to a worker handler
-const engine = new Engine();
-const handler = new EngineWorkerHandler(engine);
+const handler = new WebWorkerMLCEngineHandler();
 self.onmessage = (msg: MessageEvent) => {
   handler.onmessage(msg);
 };
