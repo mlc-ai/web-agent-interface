@@ -9,7 +9,7 @@ export type EnvironmentType = EnvironmentTypeEnum | string;
 
 export class Environment {
   environmentType: EnvironmentType;
-  supported_actions: Map<ActionType, (...args: any) => any> = new Map();
+  supportedActions: Map<ActionType, (...args: any) => any> = new Map();
 
   constructor(environmentType: EnvironmentType) {
     this.environmentType = environmentType;
@@ -19,18 +19,18 @@ export class Environment {
     actionType: T,
     actionFn: ActionFunctionMap[T]
   ): void {
-    this.supported_actions.set(actionType, actionFn);
+    this.supportedActions.set(actionType, actionFn);
   }
 
   getSupportedActionTypes(): ActionType[] {
-    return [...this.supported_actions.keys()];
+    return [...this.supportedActions.keys()];
   }
 
   async executeAction<T extends ActionType>(
     actionType: T,
     ...args: Parameters<ActionFunctionMap[T]>
   ): Promise<ReturnType<ActionFunctionMap[T]>> {
-    const actionFn = this.supported_actions.get(actionType);
+    const actionFn = this.supportedActions.get(actionType);
     if (actionFn) {
       return actionFn(...args);
     }
