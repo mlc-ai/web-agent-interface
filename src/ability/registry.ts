@@ -1,8 +1,4 @@
-import {
-  Ability,
-  AbilityType,
-  AbilityTypeEnum,
-} from "./ability";
+import { Ability, AbilityType, AbilityTypeEnum } from "./ability";
 import { EditingAbility, EditingAbilityConfig } from "./editing";
 import { Environment } from "../environment";
 
@@ -19,11 +15,11 @@ export class AbilityRegistry {
   getAbility(
     ability: AbilityType,
     envs: Environment[],
-    config?: AbilityConfig
+    config?: AbilityConfig,
   ): Ability | undefined {
     if (typeof ability === "string") {
       const customAbility = this.customAbilities.find(
-        (a) => a.abilityType === ability
+        (a) => a.abilityType === ability,
       );
       if (customAbility) {
         if (customAbility.isApplicable(envs)) {
@@ -39,19 +35,17 @@ export class AbilityRegistry {
   private getBuiltInAbility(
     ability: AbilityTypeEnum,
     envs: Environment[],
-    config?: AbilityConfig
+    config?: AbilityConfig,
   ): Ability | undefined {
-    switch (ability) {
-      case AbilityTypeEnum.Editing:
-        if (!config) {
-          throw new Error("Editing ability requires a configuration");
-        }
-        const editingAbility = new EditingAbility(config);
-        if (editingAbility.isApplicable(envs)) {
-          editingAbility.bindEnvironments(envs);
-          return editingAbility;
-        }
-        break;
+    if (ability == AbilityTypeEnum.Editing) {
+      if (!config) {
+        throw new Error("Editing ability requires a configuration");
+      }
+      const editingAbility = new EditingAbility(config);
+      if (editingAbility.isApplicable(envs)) {
+        editingAbility.bindEnvironments(envs);
+        return editingAbility;
+      }
     }
     return undefined;
   }

@@ -17,7 +17,7 @@ export class Environment {
 
   registerAction<T extends ActionType>(
     actionType: T,
-    actionFn: ActionFunctionMap[T]
+    actionFn: ActionFunctionMap[T],
   ): void {
     this.supportedActions.set(actionType, actionFn);
   }
@@ -35,7 +35,7 @@ export class Environment {
       return actionFn(...args);
     }
     throw new Error(
-      `Action ${ActionType[actionType]} is not supported in this environment`
+      `Action ${ActionType[actionType]} is not supported in this environment`,
     );
   }
 }

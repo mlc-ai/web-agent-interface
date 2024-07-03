@@ -7,9 +7,9 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c",
-    "lint": "npx eslint .",
+    "lint": "npx eslint . && prettier --check \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"",
     "test": "jest",
-    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
+    "format": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "repository": {
     "type": "git",

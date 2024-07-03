@@ -39,7 +39,7 @@ export abstract class Ability {
 
   isApplicable(envs: Environment[]) {
     const actions = new Set(
-      envs.flatMap((env) => env.getSupportedActionTypes())
+      envs.flatMap((env) => env.getSupportedActionTypes()),
     );
     for (const action of this.requiredActions) {
       if (!actions.has(action)) {

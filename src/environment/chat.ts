@@ -24,21 +24,17 @@ export class ChatEnvironment extends Environment {
         worker: Worker,
         modelId: string,
         chatOpts?: ChatOptions,
-        initProgressCallback?: InitProgressCallback
+        initProgressCallback?: InitProgressCallback,
       ) => {
         if (this.engine) {
           return;
         }
-        this.engine = await CreateWebWorkerEngine(
-          worker,
-          modelId,
-          {
-            chatOpts: chatOpts,
-            initProgressCallback: initProgressCallback,
-          }
-        );
+        this.engine = await CreateWebWorkerEngine(worker, modelId, {
+          chatOpts: chatOpts,
+          initProgressCallback: initProgressCallback,
+        });
         console.log("Engine initialized");
-      }
+      },
     );
   }
 
@@ -48,12 +44,12 @@ export class ChatEnvironment extends Environment {
       async (request: ChatCompletionRequest) => {
         if (!this.engine) {
           throw new Error(
-            "Engine is not initialized, or intialization is in progress. Please call InitChat first."
+            "Engine is not initialized, or intialization is in progress. Please call InitChat first.",
           );
         }
         const reply = await this.engine.chat.completions.create(request);
         return reply;
-      }
+      },
     );
   }
 }

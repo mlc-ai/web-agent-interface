@@ -1,6 +1,6 @@
 import { DOMTreeEnvironment } from "../src/environment/index";
 import { ActionType } from "../src/action/index";
-import { beforeEach, describe, expect, jest, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 
 describe("ChatCompletionAction", () => {
   let env: DOMTreeEnvironment;

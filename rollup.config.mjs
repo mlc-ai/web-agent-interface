@@ -2,8 +2,8 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import ignore from "rollup-plugin-ignore";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
-import image from '@rollup/plugin-image';
-import sass from 'rollup-plugin-sass';
+import image from "@rollup/plugin-image";
+import sass from "rollup-plugin-sass";
 
 export default {
   input: "src/index.ts",

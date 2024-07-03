@@ -82,7 +82,7 @@ export type GetSelectedTextAction = (selector?: string) => string | null;
  */
 export type ReplaceSelectedTextAction = (
   replace_text: string,
-  selector?: string
+  selector?: string,
 ) => boolean;
 
 export type HighlightSelectedTextAction = () => void;
@@ -101,7 +101,7 @@ export type InitChatAction = (
   worker: Worker,
   modelId: string,
   chatOpts?: ChatOptions,
-  initProgressCallback?: InitProgressCallback
+  initProgressCallback?: InitProgressCallback,
 ) => Promise<void>;
 
 /**
@@ -110,14 +110,14 @@ export type InitChatAction = (
  * @param request A OpenAI-style ChatCompletion request
  */
 export type ChatCompletionAction = (
-  request: ChatCompletionRequest
+  request: ChatCompletionRequest,
 ) => Promise<ChatCompletion | AsyncIterable<ChatCompletionChunk>>;
 
 export type CreateChatBoxAction = (
   selector: string,
   onSubmitCallback: (inputValue: string, chatBox: ChatBox) => void,
   onAcceptCallback: (generatedOutput: string, chatBox: ChatBox) => void,
-  onDiscardCallback: (chatBox: ChatBox) => void
+  onDiscardCallback: (chatBox: ChatBox) => void,
 ) => ChatBox;
 
 // Map each ActionType to its corresponding function signature

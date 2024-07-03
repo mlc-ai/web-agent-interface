@@ -2,9 +2,9 @@ import { Environment, EnvironmentTypeEnum } from "./environment";
 import { ActionType } from "../action";
 import { ChatBox } from "./chatbox";
 
-import rangy from 'rangy';
-import 'rangy/lib/rangy-highlighter';
-import 'rangy/lib/rangy-classapplier';
+import rangy from "rangy";
+import "rangy/lib/rangy-highlighter";
+import "rangy/lib/rangy-classapplier";
 
 export class DOMTreeEnvironment extends Environment {
   metadata?: Record<string, any>;
@@ -18,12 +18,14 @@ export class DOMTreeEnvironment extends Environment {
     this.registerCreateChatBoxAction();
     rangy.init();
     this.highlighter = rangy.createHighlighter();
-    this.highlighter.addClassApplier(rangy.createClassApplier("wai-highlight", {
-      ignoreWhiteSpace: true,
-      tagNames: ["span"],
-  }));
-    const styleSheet = document.createElement('style');
-    styleSheet.innerText = '.wai-highlight { background: lightgrey; }';
+    this.highlighter.addClassApplier(
+      rangy.createClassApplier("wai-highlight", {
+        ignoreWhiteSpace: true,
+        tagNames: ["span"],
+      }),
+    );
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = ".wai-highlight { background: lightgrey; }";
     document.head.appendChild(styleSheet);
   }
 
@@ -53,41 +55,37 @@ export class DOMTreeEnvironment extends Environment {
       },
     );
 
-    this.registerAction(
-      ActionType.HighlightSelectedText,
-      () => {
-        const sel = rangy.getSelection();
-        if (sel.rangeCount > 0) {
-          this.highlighter.highlightSelection("wai-highlight");
-        }
-      },
-    )
+    this.registerAction(ActionType.HighlightSelectedText, () => {
+      const sel = rangy.getSelection();
+      if (sel.rangeCount > 0) {
+        this.highlighter.highlightSelection("wai-highlight");
+      }
+    });
 
-    this.registerAction(
-      ActionType.RemoveAllHighlights,
-      () => {
-        this.highlighter.removeAllHighlights();
-        // Ensure that we don't have any remaining highlighted elements
-        const highlightedElements: NodeListOf<HTMLElement> = document.querySelectorAll('.wai-highlight');
-        highlightedElements.forEach((element) => {
-          const docFragment: DocumentFragment = document.createDocumentFragment();
-          while (element.firstChild) {
-            docFragment.appendChild(element.firstChild);
-          }      
-          element.parentNode?.replaceChild(docFragment, element);
-        });
-      },
-    );
+    this.registerAction(ActionType.RemoveAllHighlights, () => {
+      this.highlighter.removeAllHighlights();
+      // Ensure that we don't have any remaining highlighted elements
+      const highlightedElements: NodeListOf<HTMLElement> =
+        document.querySelectorAll(".wai-highlight");
+      highlightedElements.forEach((element) => {
+        const docFragment: DocumentFragment = document.createDocumentFragment();
+        while (element.firstChild) {
+          docFragment.appendChild(element.firstChild);
+        }
+        element.parentNode?.replaceChild(docFragment, element);
+      });
+    });
 
     this.registerAction(
       ActionType.ReplaceHighlightedText,
       (replacementText: string) => {
-        const highlightedElements: NodeListOf<HTMLElement> = document.querySelectorAll('.wai-highlight');
+        const highlightedElements: NodeListOf<HTMLElement> =
+          document.querySelectorAll(".wai-highlight");
         highlightedElements.forEach((element) => {
           element.innerText = replacementText;
         });
       },
-    )
+    );
   }
 
   private registerClickAction() {
@@ -138,7 +136,12 @@ export class DOMTreeEnvironment extends Environment {
     this.registerAction(
       ActionType.CreateChatBox,
       (selector, submitCallback, acceptCallback, discardCallback) => {
-        return new ChatBox(selector, submitCallback, acceptCallback, discardCallback);
+        return new ChatBox(
+          selector,
+          submitCallback,
+          acceptCallback,
+          discardCallback,
+        );
       },
     );
   }

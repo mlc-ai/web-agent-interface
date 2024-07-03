@@ -13,7 +13,7 @@ export class ChatBox extends HTMLElement {
     selector: string,
     submitCallback: (textInput: string, chatBox: ChatBox) => void,
     acceptCallback: (generatedOutput: string, chatBox: ChatBox) => void,
-    discardCallback: (chatBox: ChatBox) => void
+    discardCallback: (chatBox: ChatBox) => void,
   ) {
     super();
     this.onSubmit = submitCallback;
@@ -23,7 +23,7 @@ export class ChatBox extends HTMLElement {
 
     this.initDisplay(selector);
     this.chatBox = this.shadowRoot?.querySelector(
-      ".chatbox-container"
+      ".chatbox-container",
     ) as HTMLElement;
     this.hide();
   }
@@ -33,20 +33,20 @@ export class ChatBox extends HTMLElement {
     this.shadowRoot.appendChild(chatBoxTemplate.content.cloneNode(true));
 
     this.chatInput = this.shadowRoot.querySelector(
-      "#chat-input"
+      "#chat-input",
     ) as HTMLInputElement;
     this.chatOutput = this.shadowRoot.querySelector(
-      ".chat-output"
+      ".chat-output",
     ) as HTMLDivElement;
 
     const submitButton = this.shadowRoot.querySelector(
-      "#chat-submit"
+      "#chat-submit",
     ) as HTMLButtonElement;
     const acceptButton = this.shadowRoot.querySelector(
-      "#chat-accept"
+      "#chat-accept",
     ) as HTMLButtonElement;
     const discardButton = this.shadowRoot.querySelector(
-      "#chat-discard"
+      "#chat-discard",
     ) as HTMLButtonElement;
 
     this.chatInput.addEventListener("keydown", (event: KeyboardEvent) => {

@@ -7,14 +7,14 @@ import {
   InitProgressCallback,
 } from "@mlc-ai/web-llm";
 import { ChatBox } from "../environment";
-import rangy from 'rangy';
+import rangy from "rangy";
 
 export interface EditingAbilityConfig {
   // Triggering conditions
   uiTriggers: UITrigger[];
 
   // Chat related configs
-  worker: Worker,
+  worker: Worker;
   modelId: string;
   chatOptions?: ChatOptions;
   initProgressCallback?: InitProgressCallback;
@@ -48,14 +48,14 @@ export class EditingAbility extends Ability {
       this.config.worker,
       this.config.modelId,
       this.config.chatOptions,
-      this.config.initProgressCallback
+      this.config.initProgressCallback,
     );
   }
 
   async execute(selector: string): Promise<void> {
     const selectedText = await this.callBindedAction(
       ActionType.GetSelectedText,
-      selector
+      selector,
     );
     if (!selectedText) {
       return;
@@ -82,7 +82,7 @@ export class EditingAbility extends Ability {
           };
           const completion = (await this.callBindedAction(
             ActionType.ChatCompletion,
-            request
+            request,
           )) as AsyncIterable<ChatCompletionChunk>;
 
           let message = "";
@@ -94,10 +94,7 @@ export class EditingAbility extends Ability {
           }
         },
         async (output: string, chatBox: ChatBox) => {
-          this.callBindedAction(
-            ActionType.ReplaceHighlightedText,
-            output
-          );
+          this.callBindedAction(ActionType.ReplaceHighlightedText, output);
           chatBox.hide();
           chatBox.clearInputAndOutput();
           await this.callBindedAction(ActionType.RemoveAllHighlights);
@@ -106,7 +103,7 @@ export class EditingAbility extends Ability {
           chatBox.hide();
           chatBox.clearInputAndOutput();
           await this.callBindedAction(ActionType.RemoveAllHighlights);
-        }
+        },
       );
       this.selector = selector;
     } else {

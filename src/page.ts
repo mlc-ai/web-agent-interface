@@ -1,4 +1,9 @@
-import { Ability, AbilityType, AbilityRegistry, AbilityConfig, AbilityTypeEnum } from "./ability";
+import {
+  Ability,
+  AbilityType,
+  AbilityRegistry,
+  AbilityConfig,
+} from "./ability";
 import {
   Environment,
   EnvironmentRegistry,
@@ -56,15 +61,13 @@ export class BasicPage {
       const supportedAbility = this.abilityRegistry.getAbility(
         abilityType,
         this.envs,
-        config
+        config,
       );
 
       if (supportedAbility) {
         this.abilities.set(abilityType, supportedAbility);
       } else {
-        console.error(
-          `Could not find a supported ability for ${abilityType}`
-        );
+        console.error(`Could not find a supported ability for ${abilityType}`);
       }
     });
   }

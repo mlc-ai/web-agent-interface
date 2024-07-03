@@ -20,15 +20,17 @@ async function main() {
         wai.AbilityTypeEnum.Editing,
         {
           modelId: "Llama-2-7b-chat-hf-q4f16_1-1k",
-          worker: new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
+          worker: new Worker(new URL("./worker.ts", import.meta.url), {
+            type: "module",
+          }),
           uiTriggers: [
             {
               eventType: "keydown",
               selector: "body",
               condition: (event: Event) => {
                 const keyboardEvent: KeyboardEvent = event as KeyboardEvent;
-                return (keyboardEvent.ctrlKey) && keyboardEvent.key === "w";
-              }
+                return keyboardEvent.ctrlKey && keyboardEvent.key === "w";
+              },
             },
           ],
           initProgressCallback: (report) => {
