@@ -35,6 +35,7 @@ export class ChatBox extends HTMLElement {
     this.chatInput = this.shadowRoot.querySelector(
       "#chat-input",
     ) as HTMLInputElement;
+
     this.chatOutput = this.shadowRoot.querySelector(
       ".chat-output",
     ) as HTMLDivElement;
@@ -42,9 +43,11 @@ export class ChatBox extends HTMLElement {
     const submitButton = this.shadowRoot.querySelector(
       "#chat-submit",
     ) as HTMLButtonElement;
+
     const acceptButton = this.shadowRoot.querySelector(
       "#chat-accept",
     ) as HTMLButtonElement;
+
     const discardButton = this.shadowRoot.querySelector(
       "#chat-discard",
     ) as HTMLButtonElement;
@@ -60,11 +63,13 @@ export class ChatBox extends HTMLElement {
     submitButton.addEventListener("click", () => {
       this.handleSubmit();
     });
+
     acceptButton.addEventListener("click", () => {
       if (this.chatOutput) {
         this.onAccept(this.chatOutput.innerText, this);
       }
     });
+
     discardButton.addEventListener("click", () => {
       this.onDiscard(this);
     });
@@ -82,6 +87,7 @@ export class ChatBox extends HTMLElement {
 
   private handleSubmit() {
     if (this.chatInput && this.chatInput.value.trim()) {
+      console.log("this.chatInput.value", this.chatInput.value);
       this.onSubmit(this.chatInput.value, this);
     }
     if (this.chatOutput) {

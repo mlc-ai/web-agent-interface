@@ -6,6 +6,8 @@ import {
   MLCEngineInterface,
   ChatOptions,
   InitProgressCallback,
+  MLCEngineConfig,
+  CreateExtensionServiceWorkerMLCEngine,
 } from "@mlc-ai/web-llm";
 
 export class ChatEnvironment extends Environment {
@@ -21,20 +23,16 @@ export class ChatEnvironment extends Environment {
     this.registerAction(
       ActionType.InitChat,
       async (
-        worker: Worker,
         modelId: string,
+        engineConfig?: MLCEngineConfig,
         chatOpts?: ChatOptions,
-        initProgressCallback?: InitProgressCallback,
       ) => {
         if (this.engine) {
           return;
         }
-        this.engine = await CreateWebWorkerMLCEngine(
-          worker,
+        this.engine = await CreateExtensionServiceWorkerMLCEngine(
           modelId,
-          {
-            initProgressCallback: initProgressCallback,
-          },
+          engineConfig,
           chatOpts,
         );
         console.log("Engine initialized");

@@ -5,6 +5,7 @@ import {
   ChatCompletionRequest,
   ChatOptions,
   InitProgressCallback,
+  MLCEngineConfig,
 } from "@mlc-ai/web-llm";
 import { ChatBox } from "../environment";
 import rangy from "rangy";
@@ -16,8 +17,8 @@ export interface EditingAbilityConfig {
   // Chat related configs
   worker: Worker;
   modelId: string;
+  engineConfig?: MLCEngineConfig;
   chatOptions?: ChatOptions;
-  initProgressCallback?: InitProgressCallback;
 }
 
 export class EditingAbility extends Ability {
@@ -45,10 +46,9 @@ export class EditingAbility extends Ability {
     rangy.init();
     this.callBindedAction(
       ActionType.InitChat,
-      this.config.worker,
       this.config.modelId,
+      this.config.engineConfig,
       this.config.chatOptions,
-      this.config.initProgressCallback,
     );
   }
 

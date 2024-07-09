@@ -3,7 +3,7 @@ import {
   ChatCompletionChunk,
   ChatCompletionRequest,
   ChatOptions,
-  InitProgressCallback,
+  MLCEngineConfig,
 } from "@mlc-ai/web-llm";
 
 import { ChatBox } from "../environment";
@@ -98,10 +98,9 @@ export type ReplaceHighlightedTextAction = (replace_text: string) => void;
  * @param chatOpts The web-llm chat options
  */
 export type InitChatAction = (
-  worker: Worker,
   modelId: string,
+  engineConfig?: MLCEngineConfig,
   chatOpts?: ChatOptions,
-  initProgressCallback?: InitProgressCallback,
 ) => Promise<void>;
 
 /**
