@@ -25,6 +25,7 @@ export class OverleafPage extends Page {
             console.log('[handleSelectionChange] No valid selection', this.currentSelection.toString());
         }
     }
+}
 
     getTextSelectionImpl = () => {
         if (!this.currentSelection) {
