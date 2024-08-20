@@ -12,13 +12,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/YiyanZhai/web-agent-interface.git"
+        "url": "git+https://github.com/mlc-ai/web-agent-interface.git"
     },
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/YiyanZhai/web-agent-interface/issues"
+        "url": "https://github.com/mlc-ai/web-agent-interface/issues"
     },
-    "homepage": "https://github.com/YiyanZhai/web-agent-interface#readme",
+    "homepage": "https://github.com/mlc-ai/web-agent-interface#readme",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-image": "^3.0.3",
