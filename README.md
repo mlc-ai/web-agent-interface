@@ -16,7 +16,7 @@ To install and build the library, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-repository/web-agent-interface.git
+    git clone https://github.com/mlc-ai/web-agent-interface.git
     cd web-agent-interface
     ```
 
