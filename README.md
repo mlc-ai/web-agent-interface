@@ -31,50 +31,38 @@ To install and build the library, follow these steps:
 3. Import the necessary modules into your project. For example, if the dependency is named `@mlc-ai/web-agent-interface`:
 
 ```javascript
-import { OverleafPage } from "@mlc-ai/web-agent-interface";
+import { Overleaf } from "@mlc-ai/web-agent-interface";
 ```
 
 ## Usage
 
-### 1. Creating a Page Instance
+### 1. Creating a page handler based on the domain
 
-Depending on the platform you're working with, you can create an instance of the corresponding page class:
+Depending on the platform you're working with, you can create an handler for the specific page.
 
 - For **Overleaf**:
   ```javascript
-  const overleafPage = new OverleafPage();
+  const handler = Overleaf.createHandler();
   ```
-  <!--
-- For **Google Docs**:
-
-  ```javascript
-  const gdocPage = new GoogleDocPage();
-  ```
-
-- For **Google Calendar**:
-  ````javascript
-  const gcalPage = new GCalPage();
-  ``` -->
-  ````
 
 ### 2. Handling Text
 
 - Get the selected text:
 
   ```javascript
-  const selectedText = overleafPage.executeAction("getTextSelection");
+  const selectedText = handler.executeAction("getSelection");
   console.log("Selected text:", selectedText);
   ```
 
 - Replace selected text:
 
   ```javascript
-  overleafPage.executeAction("replaceSelectedText", {
+  handler.executeAction("replaceSelection", {
     newText: "Your new text here",
   });
   ```
 
 - Adding Text to the End of the Document:
   ```javascript
-  overleafPage.executeAction("addTextToEnd", { newText: "Text to append" });
+  handler.executeAction("appendText", { newText: "Text to append" });
   ```
