@@ -1,42 +1,35 @@
-import { Page } from './page';
-import { Action } from '../action';
-
 /**
  * Implementation of getTextSelection, replaceSelectedText, etc for Overleaf
  * @class OverleafPage
  */
-export class OverleafPage extends Page {
-    static currentSelection = null;
+class Handler {
+    currentSelection = null;
 
     constructor() {
-        super();
         // Listen for the selection change event
         document.addEventListener('selectionchange', this.handleSelectionChange);
     }
 
     handleSelectionChange = () => {
         const selection = window.getSelection();
-        console.log('[handleSelectionChange] Selection object:', selection);
-    
+
         if (selection && typeof selection.rangeCount !== 'undefined' && selection.rangeCount > 0) {
             this.currentSelection = selection;
-            console.log('[handleSelectionChange] New selection:', this.currentSelection.toString());
-        } else {
-            console.log('[handleSelectionChange] No valid selection', this.currentSelection.toString());
         }
     }
 }
 
-    getTextSelectionImpl = () => {
+    getSelectionImpl = () => {
         if (!this.currentSelection) {
             console.log('[getTextSelection] currentSelection is null');
             return '';
         }
-        console.log('[getTextSelection] Selected text:', this.currentSelection.toString());
-        return this.currentSelection.toString();
+        const selectedText = this.currentSelection.toString();
+        console.log('[getTextSelection] Selected text:', selectedText);
+        return selectedText;
     }
 
-    replaceSelectedTextImpl = (params) => {
+    replaceSelectionImpl = (params) => {
         console.log('params', params);
         const newText = params.newText;
         const selection = this.currentSelection;
@@ -62,7 +55,7 @@ export class OverleafPage extends Page {
         }
     }
 
-    addTextToEndImpl = (params) => {
+    appendTextImpl = (params) => {
         const newText = params.newText;
         const editorElement = document.querySelector(".cm-content");
         if (editorElement) {
@@ -74,18 +67,23 @@ export class OverleafPage extends Page {
     executeAction = (actionName, params) => {
         const action = this.nameToAction[actionName];
         if (action) {
-            // assuming params contains a key 'newText' for now
-            return action.call(params);
+            const response = action(params);
+            return response;
         } else {
             console.log(`Action '${actionName}' not found.`);
         }
     }
 
     nameToAction = {
-        'getTextSelection': new Action(this.getTextSelectionImpl),
-        'replaceSelectedText': new Action(this.replaceSelectedTextImpl),
-        'addTextToEnd': new Action(this.addTextToEndImpl)
+        'getSelection': this.getSelectionImpl,
+        'replaceSelection': this.replaceSelectionImpl,
+        'appendText': this.appendTextImpl,
     };
-
-    availableActions = Object.keys(this.nameToAction);
 }
+export const nameToDisplayName = {
+    'getSelection': "Get Selected Text",
+    'replaceSelection': "Replace Selected Text",
+    'appendText': "Add Text to Document",
+}
+export const actions = Object.keys(nameToDisplayName);
+export const createHandler = () => new Handler();
