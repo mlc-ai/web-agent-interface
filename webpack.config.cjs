@@ -1,22 +1,22 @@
-const path = require('path');
-const webpack = require('webpack');
-const { IgnorePlugin } = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const { IgnorePlugin } = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, 'lib'),
-    filename: 'index.js',
+    path: path.resolve(__dirname, "lib"),
+    filename: "index.js",
     library: {
-      type: 'commonjs2',
+      type: "commonjs2",
     },
     clean: true,
-    sourceMapFilename: '[file].map',
+    sourceMapFilename: "[file].map",
   },
-  target: 'web',
+  target: "web",
   resolve: {
-    extensions: ['.js', '.json'],
+    extensions: [".js", ".json"],
     fallback: {
       fs: false,
       path: false,
@@ -29,20 +29,16 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
         },
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        type: 'asset/resource',
+        type: "asset/resource",
       },
       {
         test: /\.(scss|css)$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
     ],
   },
@@ -51,11 +47,11 @@ module.exports = {
       resourceRegExp: /^fs$|^path$|^crypto$/,
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: "[name].css",
     }),
   ],
-  devtool: 'source-map',
-  mode: 'production',
+  devtool: "source-map",
+  mode: "production",
   externals: {
     // Prevent bundling of certain imported packages
     // (e.g., libraries already available as external scripts)
