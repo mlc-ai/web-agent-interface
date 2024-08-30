@@ -61,10 +61,10 @@ class Handler {
   };
 
   appendTextImpl = (params) => {
-    const newText = params.newText;
+    const text = params.text;
     const editorElement = document.querySelector(".cm-content");
     if (editorElement) {
-      const textNode = document.createTextNode(newText);
+      const textNode = document.createTextNode(text);
       editorElement.appendChild(textNode);
     }
   };
