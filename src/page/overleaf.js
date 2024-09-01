@@ -2,7 +2,7 @@
  * Implementation of getTextSelection, replaceSelectedText, etc for Overleaf
  * @class OverleafPage
  */
-class Handler {
+class PageHandler {
   currentSelection = null;
 
   constructor() {
@@ -24,23 +24,18 @@ class Handler {
 
   getSelectionImpl = () => {
     if (!this.currentSelection) {
-      console.log("[getTextSelection] currentSelection is null");
       return "";
     }
     const selectedText = this.currentSelection.toString();
-    console.log("[getTextSelection] Selected text:", selectedText);
     return selectedText;
   };
 
   replaceSelectionImpl = (params) => {
-    console.log("params", params);
     const newText = params.newText;
     const selection = this.currentSelection;
-    if (!selection) {
-      console.log("[replaceSelectedTextImpl] Selection is null");
+    if (!newText || !selection) {
       return;
     }
-    console.log("[replaceSelectedTextImpl] Selection:", selection);
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       range.deleteContents();
@@ -55,7 +50,6 @@ class Handler {
       }
       selection.removeAllRanges();
     } else {
-      console.log("[replaceSelectedTextImpl] No text selection");
       return;
     }
   };
@@ -69,17 +63,17 @@ class Handler {
     }
   };
 
-  executeAction = (actionName, params) => {
-    const action = this.nameToAction[actionName];
+  handleToolCall = (toolName, params) => {
+    const toolImplementation = this.toolNameToImplementation[actionName];
     if (action) {
-      const response = action(params);
+      const response = toolImplementation(params);
       return response;
     } else {
-      console.log(`Action '${actionName}' not found.`);
+      console.warn(`Tool '${toolName}' not found.`);
     }
   };
 
-  nameToAction = {
+  toolNameToImplementation = {
     getSelection: this.getSelectionImpl,
     replaceSelection: this.replaceSelectionImpl,
     appendText: this.appendTextImpl,
@@ -90,5 +84,5 @@ export const nameToDisplayName = {
   replaceSelection: "Replace Selected Text",
   appendText: "Add Text to Document",
 };
-export const actions = Object.keys(nameToDisplayName);
-export const createHandler = () => new Handler();
+export const tools = Object.keys(nameToDisplayName);
+export const initHandler = () => new PageHandler();

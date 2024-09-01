@@ -28,41 +28,28 @@ To install and build the library, follow these steps:
    npm run build
    ```
 
-3. Import the necessary modules into your project. For example, if the dependency is named `@mlc-ai/web-agent-interface`:
-
-```javascript
-import { Overleaf } from "@mlc-ai/web-agent-interface";
-```
-
 ## Usage
 
-### 1. Creating a page handler based on the domain
+### 1. Initialize the page handler in content script
 
-Depending on the platform you're working with, you can create an handler for the specific page.
-
-- For **Overleaf**:
   ```javascript
-  const handler = Overleaf.createHandler();
+  import { initHandler } from '@mlc-ai/web-agent-interface';
+
+  const handler = initHandler();
   ```
 
-### 2. Handling Text
 
-- Get the selected text:
+### 2. Get Available Tools
 
-  ```javascript
-  const selectedText = handler.executeAction("getSelection");
-  console.log("Selected text:", selectedText);
+    ```javascript
+  import { getTools } from '@mlc-ai/web-agent-interface';
+
+  const availableTools = getTools();
   ```
 
-- Replace selected text:
+### 3. Handling Tool Use
 
   ```javascript
-  handler.executeAction("replaceSelection", {
-    newText: "Your new text here",
-  });
-  ```
-
-- Adding Text to the End of the Document:
-  ```javascript
-  handler.executeAction("appendText", { newText: "Text to append" });
+  const observation = handler.handleToolCall(toolName, parameters);
+  console.log("Got observation:", observation);
   ```
