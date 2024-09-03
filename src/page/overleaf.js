@@ -60,6 +60,12 @@ class PageHandler {
     if (editorElement) {
       const textNode = document.createTextNode(text);
       editorElement.appendChild(textNode);
+
+      // Scroll to bottom
+      const scroller = document.querySelector(".cm-scroller");
+      if (scroller) {
+        scroller.scrollTo({ top: scroller.scrollHeight, behavior: "smooth" });
+      }
     }
   };
 
