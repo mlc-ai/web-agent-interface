@@ -8,24 +8,24 @@ const initHandler = () => {
   if (Object.keys(PAGE_HANDLER_MAP).includes(window.location.hostname)) {
     return PAGE_HANDLER_MAP[window.location.hostname].initHandler();
   }
-  console.error("[Web Agent Interface] No handler found for the current page");
+  console.error("[Web Agent Interface] No tools found for the current page");
 };
 
 const getTools = () => {
   if (Object.keys(PAGE_HANDLER_MAP).includes(window.location.hostname)) {
-    return PAGE_HANDLER_MAP[window.location.hostname].actions;
+    return PAGE_HANDLER_MAP[window.location.hostname].tools;
   }
-  console.error("[Web Agent Interface] No actions found for the current page");
+  console.error("[Web Agent Interface] No tools found for the current page");
 };
 
-const getToolDisplayName = (action) => {
+const getToolDisplayName = (tool) => {
   if (
     Object.keys(PAGE_HANDLER_MAP).includes(window.location.hostname) &&
-    PAGE_HANDLER_MAP[window.location.hostname].actions.includes(action)
+    PAGE_HANDLER_MAP[window.location.hostname].tools.includes(tool)
   ) {
-    return PAGE_HANDLER_MAP[window.location.hostname].nameToDisplayName[action];
+    return PAGE_HANDLER_MAP[window.location.hostname].nameToDisplayName[tool];
   }
-  console.error("[Web Agent Interface] No actions found for the current page");
+  console.error("[Web Agent Interface] No tools found for the current page");
 };
 
 export { initHandler, getTools, getToolDisplayName, Overleaf };
