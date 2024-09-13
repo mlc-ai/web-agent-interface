@@ -3,14 +3,14 @@
  * @class OverleafPage
  */
 class PageHandler {
-  currentSelection = null;
+  public currentSelection: Selection | null = null;
 
   constructor() {
     // Listen for the selection change event
     document.addEventListener("selectionchange", this.handleSelectionChange);
   }
 
-  handleSelectionChange = () => {
+  public handleSelectionChange = (): void => {
     const selection = window.getSelection();
 
     if (
@@ -22,16 +22,17 @@ class PageHandler {
     }
   };
 
-  getSelectionImpl = () => {
+  public getSelectionImpl = (): string => {
     if (!this.currentSelection) {
       return "";
     }
-    const selectedText = this.currentSelection.toString();
-    return selectedText;
+    return this.currentSelection.toString();
   };
 
-  replaceSelectionImpl = (params) => {
-    const newText = params.newText;
+  public replaceSelectionImpl = (params: {
+    newText: string | string[];
+  }): void => {
+    const { newText } = params;
     const selection = this.currentSelection;
     if (!newText || !selection) {
       return;
@@ -49,13 +50,11 @@ class PageHandler {
         range.insertNode(document.createTextNode(newText));
       }
       selection.removeAllRanges();
-    } else {
-      return;
     }
   };
 
-  appendTextImpl = (params) => {
-    const text = params.text;
+  public appendTextImpl = (params: { text: string }): void => {
+    const { text } = params;
     const editorElement = document.querySelector(".cm-content");
     if (editorElement) {
       const textNode = document.createTextNode(text);
@@ -69,26 +68,27 @@ class PageHandler {
     }
   };
 
-  handleToolCall = (toolName, params) => {
+  handleToolCall = (toolName: string, params: any): any => {
     if (toolName in this.toolNameToImplementation) {
       const toolImplementation = this.toolNameToImplementation[toolName];
-      const response = toolImplementation(params);
-      return response;
+      return toolImplementation(params);
     } else {
       console.warn(`Tool '${toolName}' not found in handler.`);
     }
   };
 
-  toolNameToImplementation = {
+  toolNameToImplementation: Record<string, (params: any) => any> = {
     getSelection: this.getSelectionImpl,
     replaceSelection: this.replaceSelectionImpl,
     appendText: this.appendTextImpl,
   };
 }
-export const nameToDisplayName = {
+
+export const nameToDisplayName: Record<string, string> = {
   getSelection: "Get Selected Text",
   replaceSelection: "Replace Selected Text",
   appendText: "Add Text to Document",
 };
-export const tools = Object.keys(nameToDisplayName);
-export const initHandler = () => new PageHandler();
+
+export const tools: string[] = Object.keys(nameToDisplayName);
+export const initHandler = (): PageHandler => new PageHandler();

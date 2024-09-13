@@ -1,6 +1,6 @@
-import * as Overleaf from "./page/overleaf.js";
+import * as Overleaf from "./page/overleaf";
 
-const PAGE_HANDLER_MAP = {
+const PAGE_HANDLER_MAP: Record<string, typeof Overleaf> = {
   "www.overleaf.com": Overleaf,
 };
 
@@ -18,12 +18,14 @@ const getTools = () => {
   console.error("[Web Agent Interface] No tools found for the current page");
 };
 
-const getToolDisplayName = (tool) => {
+const getToolDisplayName = (toolName: string) => {
   if (
     Object.keys(PAGE_HANDLER_MAP).includes(window.location.hostname) &&
-    PAGE_HANDLER_MAP[window.location.hostname].tools.includes(tool)
+    PAGE_HANDLER_MAP[window.location.hostname].tools.includes(toolName)
   ) {
-    return PAGE_HANDLER_MAP[window.location.hostname].nameToDisplayName[tool];
+    return PAGE_HANDLER_MAP[window.location.hostname].nameToDisplayName[
+      toolName
+    ];
   }
   console.error("[Web Agent Interface] No tools found for the current page");
 };

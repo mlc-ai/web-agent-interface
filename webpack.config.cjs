@@ -4,7 +4,7 @@ const { IgnorePlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "lib"),
     filename: "index.js",
@@ -16,7 +16,7 @@ module.exports = {
   },
   target: "web",
   resolve: {
-    extensions: [".js", ".json"],
+    extensions: [".ts", ".js", ".json"],
     fallback: {
       fs: false,
       path: false,
@@ -26,10 +26,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-typescript"]
+          }
         },
       },
       {
