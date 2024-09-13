@@ -1,12 +1,13 @@
+import { IPageHandler } from "./interface";
+
 /**
  * Implementation of getTextSelection, replaceSelectedText, etc for Overleaf
  * @class OverleafPage
  */
-class PageHandler {
+export class PageHandler implements IPageHandler {
   public currentSelection: Selection | null = null;
 
   constructor() {
-    // Listen for the selection change event
     document.addEventListener("selectionchange", this.handleSelectionChange);
   }
 
@@ -43,7 +44,7 @@ class PageHandler {
       if (Array.isArray(newText)) {
         const fragment = document.createDocumentFragment();
         newText.forEach((text) =>
-          fragment.appendChild(document.createTextNode(text)),
+          fragment.appendChild(document.createTextNode(text))
         );
         range.insertNode(fragment);
       } else {
@@ -68,27 +69,39 @@ class PageHandler {
     }
   };
 
-  handleToolCall = (toolName: string, params: any): any => {
-    if (toolName in this.toolNameToImplementation) {
-      const toolImplementation = this.toolNameToImplementation[toolName];
+  public handleToolCall(toolName: string, params: any): any {
+    if (toolName in this.toolImplementations) {
+      const toolImplementation = this.toolImplementations[toolName as ToolName];
       return toolImplementation(params);
     } else {
       console.warn(`Tool '${toolName}' not found in handler.`);
     }
-  };
+  }
 
-  toolNameToImplementation: Record<string, (params: any) => any> = {
+  toolImplementations: Record<ToolName, (...args: any[]) => any> = {
     getSelection: this.getSelectionImpl,
     replaceSelection: this.replaceSelectionImpl,
     appendText: this.appendTextImpl,
   };
 }
 
-export const nameToDisplayName: Record<string, string> = {
-  getSelection: "Get Selected Text",
-  replaceSelection: "Replace Selected Text",
-  appendText: "Add Text to Document",
+export const tools = {
+  getSelection: {
+    displayName: "Get Selected Text",
+  },
+  replaceSelection: {
+    displayName: "Replace Selected Text",
+  },
+  appendText: {
+    displayName: "Append New Text",
+  },
 };
 
-export const tools: string[] = Object.keys(nameToDisplayName);
-export const initHandler = (): PageHandler => new PageHandler();
+export type ToolName = keyof typeof tools;
+
+export function getToolInfo(): { name: ToolName; displayName: string }[] {
+  return Object.entries(tools).map(([name, tool]) => ({
+    name: name as ToolName,
+    displayName: tool.displayName,
+  }));
+}
