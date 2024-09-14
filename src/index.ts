@@ -8,6 +8,10 @@ const PAGE_TOOLS_MAP: Record<string, typeof Oveleaf.tools> = {
   "www.overleaf.com": Oveleaf.tools,
 };
 
+export const isPageSupported = (url: string) => {
+  return Object.keys(PAGE_HANDLER_MAP).includes(url);
+};
+
 export const isCurrentPageSupported = () => {
   return Object.keys(PAGE_HANDLER_MAP).includes(window.location.hostname);
 };
