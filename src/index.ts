@@ -23,7 +23,7 @@ export const initHandler = () => {
   console.error("[Web Agent Interface] No tools found for the current page");
 };
 
-const getTools = () => {
+export const getTools = () => {
   if (isCurrentPageSupported()) {
     return PAGE_TOOLS_MAP[window.location.hostname];
   }

@@ -22,4 +22,5 @@ export default new ESLint({
       semi: ["error", "always"],
     },
   },
+  ignorePatterns: ["node_modules/", "lib/"],
 });
