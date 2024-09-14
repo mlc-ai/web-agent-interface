@@ -74,7 +74,7 @@ export class PageHandler implements IPageHandler {
       const toolImplementation = this.toolImplementations[toolName as ToolName];
       return toolImplementation(params);
     } else {
-      console.warn(`Tool '${toolName}' not found in handler.`);
+      throw new Error(`Tool '${toolName}' not found in handler.`);
     }
   }
 
