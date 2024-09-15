@@ -1,4 +1,5 @@
 import { IPageHandler } from "./interface";
+import { ToolName } from "../tool";
 
 /**
  * Implementation of getTextSelection, replaceSelectedText, etc for Overleaf
@@ -74,7 +75,7 @@ export class PageHandler implements IPageHandler {
       const toolImplementation = this.toolImplementations[toolName as ToolName];
       return toolImplementation(params);
     } else {
-      throw new Error(`Tool '${toolName}' not found in handler.`);
+      throw new Error(`Tool '${toolName}' is not available on this page.`);
     }
   }
 
@@ -85,67 +86,8 @@ export class PageHandler implements IPageHandler {
   };
 }
 
-export const tools = {
-  getSelection: {
-    displayName: "Get Selected Text",
-    description:
-      "Get the user's current selected text content on the document.",
-    schema: {
-      type: "function",
-      function: {
-        name: "getSelection",
-        description:
-          "getSelection() -> str - Get the user's current selected text content on the document, no parameter is needed.\\n\\n Returns:\\n    str: The user's current selected text content on the document.",
-        parameters: { type: "object", properties: {}, required: [] },
-      },
-    },
-  },
-  replaceSelection: {
-    displayName: "Replace Selected Text",
-    description:
-      "Replace the user's current selected text content on the document with new text content.",
-    schema: {
-      type: "function",
-      function: {
-        name: "replaceSelection",
-        description:
-          "replaceSelection(newText: str) - Replace the user's current selected text content on the document with new text content.\\n\\n Args:\\n    newText (str): New text content to replace the user's current selected text content.",
-        parameters: {
-          type: "object",
-          properties: {
-            newText: { type: "string" },
-          },
-          required: ["newText"],
-        },
-      },
-    },
-  },
-  appendText: {
-    displayName: "Append New Text",
-    description: "Add some text content to the end of the document.",
-    schema: {
-      type: "function",
-      function: {
-        name: "appendText",
-        description:
-          "appendText(text: str) - Add some text content to the end of the document.\\n\\n Args:\\n    text (str): Text content to be added to the end of the document.",
-        parameters: {
-          type: "object",
-          properties: {
-            text: { type: "string" },
-          },
-          required: ["text"],
-        },
-      },
-    },
-  },
-};
-
-export type ToolName = keyof typeof tools;
-
-export function getToolInfo(): { name: ToolName; displayName: string }[] {
-  return Object.entries(tools).map(([name, tool]) => ({
-    name: name as ToolName,
-    displayName: tool.displayName,
-  }));
-}
+export const availableTools: ToolName[] = [
+  "getSelection",
+  "replaceSelection",
+  "appendText",
+];
