@@ -1,46 +1,45 @@
 import { IPageHandler } from "../interface";
 import { google } from "googleapis";
-import { GoogleCalendarParams } from "./googleCalendar_base";
-import { runViewEvents } from "./commands/run_view_events";
 
 export class PageHandler implements IPageHandler {
-  protected clientEmail: string;
-  protected privateKey: string;
-  protected scopes: string[];
+  protected token: string;
 
-  constructor(fields: GoogleCalendarParams) {
-    this.clientEmail = fields.credentials?.clientEmail || "";
-    this.privateKey = fields.credentials?.privateKey || "";
-    this.scopes = fields.scopes || [
-      "https://www.googleapis.com/auth/calendar",
-      "https://www.googleapis.com/auth/calendar.events",
-    ];
+  // assume that access_token for oAuth2Client is provided when page is initialized
+  constructor(token: string) {
+    this.token = token;
   }
 
-  public getAuth = async () => {
-    const auth = new google.auth.JWT(
-      this.clientEmail,
-      undefined,
-      this.privateKey,
-      this.scopes,
-    );
-    return auth;
-  };
-
   public googleCalendarGetIDsImpl = async () => {
-    const auth = await this.getAuth();
-    const calendar = google.calendar({ version: "v3", auth });
+    const oAuth2Client = new google.auth.OAuth2();
+    oAuth2Client.setCredentials({ access_token: this.token });
+    const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
+
     const calendarList = await calendar.calendarList.list();
     const calendarIds = calendarList.data.items?.map((item) => item.id);
     return calendarIds;
   };
 
-  public googleCalendarViewEventsImpl = async (calendarId: string) => {
-    const auth = await this.getAuth();
-    return runViewEvents({
-      auth,
-      calendarId: calendarId,
-    });
+  public googleCalendarViewEventsImpl = async (
+    calendarId: string = "primary",
+    maxResults: number = 10,
+  ) => {
+    const oAuth2Client = new google.auth.OAuth2();
+    oAuth2Client.setCredentials({ access_token: this.token });
+    const calendar = google.calendar({ version: "v3", auth: oAuth2Client });
+
+    try {
+      const response = await calendar.events.list({
+        calendarId: calendarId,
+        timeMin: new Date().toISOString(), // Get events from now
+        maxResults: maxResults, // Limit to the last #maxResults events
+        singleEvents: true, // Expand recurring events into single instances
+        orderBy: "startTime", // Order events by start time
+      });
+      return response.data.items;
+    } catch (error) {
+      console.error("Error fetching calendar events:", error);
+      throw new Error("Failed to fetch calendar events");
+    }
   };
 
   public handleToolCall(toolName: string, params: any): any {
@@ -57,6 +56,7 @@ export class PageHandler implements IPageHandler {
     googleCalendarViewEvents: this.googleCalendarViewEventsImpl,
   };
 }
+
 export const tools = {
   googleCalendarGetIDs: {
     displayName: "Google Calendar Get IDs",
@@ -79,7 +79,7 @@ export const tools = {
       function: {
         name: "googleCalendarViewEvents",
         description:
-          "googleCalendarViewEvents() -> str - Get the user's Google Calendar events and meetings, parameter is the calendar ID.\\n\\n Args:\\n    calendarId (str): The calendar ID.\\n\\n Returns:\\n    title, start time, end time, attendees, description (if available)",
+          "googleCalendarViewEvents() -> str - Get the user's Google Calendar events and meetings, parameter is the calendar ID.\\n\\n Args:\\n    calendarId (str): The calendar ID; maxResults (int): the maximum number of results\\n\\n Returns:\\n    title, start time, end time, attendees, description (if available)",
         parameters: {
           type: "object",
           properties: {
