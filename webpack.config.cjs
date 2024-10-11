@@ -11,7 +11,9 @@ module.exports = {
     library: {
       type: "commonjs2",
     },
-    clean: true,
+    clean: {
+      keep: "index.d.ts",
+    },
     sourceMapFilename: "[file].map",
   },
   target: "web",
