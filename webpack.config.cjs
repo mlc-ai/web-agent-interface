@@ -18,9 +18,22 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".js", ".json"],
     fallback: {
-      fs: false,
-      path: false,
-      crypto: false,
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      assert: require.resolve("assert/"),
+      buffer: require.resolve("buffer/"),
+      stream: require.resolve("stream-browserify"),
+      util: require.resolve("util/"),
+      os: require.resolve("os-browserify/browser"),
+      url: require.resolve("url/"),
+      path: require.resolve("path-browserify"),
+      zlib: require.resolve("browserify-zlib"),
+      process: require.resolve("process/browser"),
+      querystring: require.resolve("querystring-es3"), // Add this line for querystring
+      net: false,  // Disable modules not available in browser
+      tls: false,  // Disable modules not available in browser
+      child_process: false,  // Disable modules not available in browser
+      http2: false, // Disable modules not available in browser
     },
   },
   module: {
@@ -31,8 +44,8 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env", "@babel/preset-typescript"]
-          }
+            presets: ["@babel/preset-env", "@babel/preset-typescript"],
+          },
         },
       },
       {
@@ -51,6 +64,10 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
+    }),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
     }),
   ],
   devtool: "source-map",
