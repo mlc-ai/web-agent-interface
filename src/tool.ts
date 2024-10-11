@@ -55,6 +55,40 @@ const tools: Record<string, ToolInfo> = {
       },
     },
   },
+  googleCalendarGetIDs: {
+    name: "googleCalendarGetIDs",
+    displayName: "Google Calendar - Get IDs",
+    description: "Retrieve Google Calendar IDs.",
+    schema: {
+      type: "function",
+      function: {
+        name: "googleCalendarGetIDs",
+        description:
+          "googleCalendarGetIDs() -> str - Get user's Google Calendar IDs, no parameter is needed.\\n\\n Returns:\\n    calendar IDs",
+        parameters: { type: "object", properties: {}, required: [] },
+      },
+    },
+  },
+  googleCalendarViewEvents: {
+    name: "googleCalendarViewEvents",
+    displayName: "Google Calendar - View Events",
+    description: "Retrieve Google Calendar events and meetings.",
+    schema: {
+      type: "function",
+      function: {
+        name: "googleCalendarViewEvents",
+        description:
+          "googleCalendarViewEvents() -> str - Get the user's Google Calendar events and meetings, parameter is the calendar ID.\\n\\n Args:\\n    calendarId (str): The calendar ID.\\n\\n Returns:\\n    title, start time, end time, attendees, description (if available)",
+        parameters: {
+          type: "object",
+          properties: {
+            calendarId: { type: "string" },
+          },
+          required: ["calendarId"],
+        },
+      },
+    },
+  },
 };
 
 export const allTools = Object.keys(tools);

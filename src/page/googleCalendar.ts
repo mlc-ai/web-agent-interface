@@ -1,5 +1,7 @@
-import { IPageHandler } from "../interface";
 import { google } from "googleapis";
+import { IPageHandler } from "./interface";
+import { ToolName } from "../tool";
+
 
 export class PageHandler implements IPageHandler {
   protected token: string;
@@ -57,46 +59,7 @@ export class PageHandler implements IPageHandler {
   };
 }
 
-export const tools = {
-  googleCalendarGetIDs: {
-    displayName: "Google Calendar Get IDs",
-    description: "A tool for retrieving Google Calendar IDs.",
-    schema: {
-      type: "function",
-      function: {
-        name: "googleCalendarGetIDs",
-        description:
-          "googleCalendarGetIDs() -> str - Get user's Google Calendar IDs, no parameter is needed.\\n\\n Returns:\\n    calendar IDs",
-        parameters: { type: "object", properties: {}, required: [] },
-      },
-    },
-  },
-  googleCalendarViewEvents: {
-    displayName: "Google Calendar View Events",
-    description: "A tool for retrieving Google Calendar events and meetings.",
-    schema: {
-      type: "function",
-      function: {
-        name: "googleCalendarViewEvents",
-        description:
-          "googleCalendarViewEvents() -> str - Get the user's Google Calendar events and meetings, parameter is the calendar ID.\\n\\n Args:\\n    calendarId (str): The calendar ID; maxResults (int): the maximum number of results\\n\\n Returns:\\n    title, start time, end time, attendees, description (if available)",
-        parameters: {
-          type: "object",
-          properties: {
-            calendarId: { type: "string" },
-          },
-          required: ["calendarId"],
-        },
-      },
-    },
-  },
-};
-
-export type ToolName = keyof typeof tools;
-
-export function getToolInfo(): { name: ToolName; displayName: string }[] {
-  return Object.entries(tools).map(([name, tool]) => ({
-    name: name as ToolName,
-    displayName: tool.displayName,
-  }));
-}
+export const availableTools: ToolName[] = [
+  "googleCalendarGetIDs",
+  "googleCalendarViewEvents",
+];
