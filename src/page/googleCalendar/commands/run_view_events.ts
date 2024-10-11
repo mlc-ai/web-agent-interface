@@ -6,7 +6,7 @@ type RunViewEventParams = {
   calendarId: string;
 };
 
-const runViewEvents = async ( { auth, calendarId }: RunViewEventParams ) => {
+const runViewEvents = async ({ auth, calendarId }: RunViewEventParams) => {
   const calendar = new calendar_v3.Calendar({});
 
   try {
@@ -31,14 +31,14 @@ const runViewEvents = async ( { auth, calendarId }: RunViewEventParams ) => {
               description,
               start,
               end,
-            })
+            }),
           )
         : [];
 
     return `Result for view events command: \n${JSON.stringify(
       curatedItems,
       null,
-      2
+      2,
     )}`;
   } catch (error) {
     return `An error occurred: ${error}`;
