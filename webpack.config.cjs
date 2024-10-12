@@ -12,7 +12,7 @@ module.exports = {
       type: "commonjs2",
     },
     clean: {
-      keep: "index.d.ts",
+      keep: /\.d\.ts$/,
     },
     sourceMapFilename: "[file].map",
   },

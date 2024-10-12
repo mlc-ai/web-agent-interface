@@ -1,13 +1,13 @@
-import * as Oveleaf from "./page/overleaf";
+import * as Overleaf from "./page/overleaf";
 import { ToolName } from "./tool";
 export { getToolInfo, getToolsInfo, allTools } from "./tool";
 
-const PAGE_HANDLER_MAP: Record<string, typeof Oveleaf.PageHandler> = {
-  "www.overleaf.com": Oveleaf.PageHandler,
+const PAGE_HANDLER_MAP: Record<string, typeof Overleaf.PageHandler> = {
+  "www.overleaf.com": Overleaf.PageHandler,
 };
 
 const PAGE_TOOLS_MAP: Record<string, ToolName[]> = {
-  "www.overleaf.com": Oveleaf.availableTools,
+  "www.overleaf.com": Overleaf.availableTools,
 };
 
 export const isPageSupported = (url: string) => {
@@ -31,3 +31,5 @@ export const getAvailableTools = () => {
   }
   console.error("[Web Agent Interface] No tools found for the current page");
 };
+
+export * as Overleaf from './page/overleaf';
