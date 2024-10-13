@@ -32,4 +32,4 @@ export const getAvailableTools = () => {
   console.error("[Web Agent Interface] No tools found for the current page");
 };
 
-export * as Overleaf from './page/overleaf';
+export * as Overleaf from "./page/overleaf";

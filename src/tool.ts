@@ -1,30 +1,30 @@
 const tools: Record<string, ToolInfo> = {
-  getSelection: {
-    name: "getSelection",
+  getSelectedText: {
+    name: "getSelectedText",
     displayName: "Get Selected Text",
     description:
       "Get the user's current selected text content on the document.",
     schema: {
       type: "function",
       function: {
-        name: "getSelection",
+        name: "getSelectedText",
         description:
-          "getSelection() -> str - Get the user's current selected text content on the document, no parameter is needed.\\n\\n Returns:\\n    str: The user's current selected text content on the document.",
+          "getSelectedText() -> str - Get the user's current selected text content on the document, no parameter is needed.\\n\\n Returns:\\n    str: The user's current selected text content on the document.",
         parameters: { type: "object", properties: {}, required: [] },
       },
     },
   },
-  replaceSelection: {
-    name: "replaceSelection",
+  replaceSelectedText: {
+    name: "replaceSelectedText",
     displayName: "Replace Selected Text",
     description:
       "Replace the user's current selected text content on the document with new text content.",
     schema: {
       type: "function",
       function: {
-        name: "replaceSelection",
+        name: "replaceSelectedText",
         description:
-          "replaceSelection(newText: str) - Replace the user's current selected text content on the document with new text content.\\n\\n Args:\\n    newText (str): New text content to replace the user's current selected text content.",
+          "replaceSelectedText(newText: str) - Replace the user's current selected text content on the document with new text content.\\n\\n Args:\\n    newText (str): New text content to replace the user's current selected text content.",
         parameters: {
           type: "object",
           properties: {
@@ -35,16 +35,16 @@ const tools: Record<string, ToolInfo> = {
       },
     },
   },
-  appendText: {
-    name: "appendText",
-    displayName: "Append New Text",
-    description: "Add some text content to the end of the document.",
+  appendTextToDocument: {
+    name: "appendTextToDocument",
+    displayName: "Append Text To Document",
+    description: "Append text content to the end of the document.",
     schema: {
       type: "function",
       function: {
-        name: "appendText",
+        name: "appendTextToDocument",
         description:
-          "appendText(text: str) - Add some text content to the end of the document.\\n\\n Args:\\n    text (str): Text content to be added to the end of the document.",
+          "appendTextToDocument(text: str) - Add some text content to the end of the document.\\n\\n Args:\\n    text (str): Text content to be added to the end of the document.",
         parameters: {
           type: "object",
           properties: {

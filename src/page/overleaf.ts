@@ -80,14 +80,14 @@ export class PageHandler implements IPageHandler {
   }
 
   toolImplementations: Record<ToolName, (...args: any[]) => any> = {
-    getSelection: this.getSelectionImpl,
-    replaceSelection: this.replaceSelectionImpl,
-    appendText: this.appendTextImpl,
+    getSelectedText: this.getSelectionImpl,
+    replaceSelectedText: this.replaceSelectionImpl,
+    appendTextToDocument: this.appendTextImpl,
   };
 }
 
 export const availableTools: ToolName[] = [
-  "getSelection",
-  "replaceSelection",
-  "appendText",
+  "getSelectedText",
+  "replaceSelectedText",
+  "appendTextToDocument",
 ];
