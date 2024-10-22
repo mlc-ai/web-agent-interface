@@ -1,3 +1,4 @@
+import { Scope } from "./scope";
 import { State } from "./state";
 import { Tool } from "./tool";
 

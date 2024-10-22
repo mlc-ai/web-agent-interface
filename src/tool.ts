@@ -1,5 +1,6 @@
 import { actions } from "./action";
 import { retrievers } from "./retriever";
+import { Scope } from "./scope";
 import { State } from "./state";
 
 export const tool: Record<string, Tool> = {
@@ -29,5 +30,6 @@ export interface Tool {
     };
   };
   type: "retriever" | "action";
+  scopes?: Scope[];
   implementation: (state: State, parameters: any) => void;
 }

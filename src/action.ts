@@ -1,3 +1,4 @@
+import { Scope } from "./scope";
 import { State } from "./state";
 import { Tool } from "./tool";
 
@@ -127,6 +128,7 @@ export const actions: Record<string, Tool> = {
       },
     },
     type: "action",
+    scopes: [Scope.Overleaf],
     implementation: replaceSelectedText,
   },
   appendTextToDocument: {
@@ -149,6 +151,7 @@ export const actions: Record<string, Tool> = {
       },
     },
     type: "action",
+    scopes: [Scope.Overleaf],
     implementation: appendTextToDocument,
   },
   createCalendarEvent: {
