@@ -1,6 +1,6 @@
 import { actions } from "./action";
 import { retrievers } from "./retriever";
-import { Scope } from "./scope";
+import { CallerType, Scope, ToolType } from "./enum";
 import { State } from "./state";
 
 export const tool: Record<string, Tool> = {
@@ -29,7 +29,8 @@ export interface Tool {
       };
     };
   };
-  type: "retriever" | "action";
-  scopes?: Scope[];
+  type: ToolType;
+  scope: Scope.Any | Scope[];
+  caller: CallerType;
   implementation: (state: State, parameters: any) => void;
 }

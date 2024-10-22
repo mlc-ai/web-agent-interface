@@ -1,4 +1,4 @@
-import { Scope } from "./scope";
+import { CallerType, Scope, ToolType } from "./enum";
 import { State } from "./state";
 import { Tool } from "./tool";
 
@@ -127,8 +127,9 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
-    type: "action",
-    scopes: [Scope.Overleaf],
+    type: ToolType.Action,
+    scope: [Scope.Overleaf],
+    caller: CallerType.ContentScript,
     implementation: replaceSelectedText,
   },
   appendTextToDocument: {
@@ -150,8 +151,9 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
-    type: "action",
-    scopes: [Scope.Overleaf],
+    type: ToolType.Action,
+    scope: [Scope.Overleaf],
+    caller: CallerType.ContentScript,
     implementation: appendTextToDocument,
   },
   createCalendarEvent: {
@@ -178,7 +180,9 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
-    type: "action",
+    type: ToolType.Action,
+    scope: [Scope.Overleaf],
+    caller: CallerType.Any,
     implementation: createCalendarEvent,
   },
 };

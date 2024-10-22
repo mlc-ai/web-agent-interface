@@ -1,4 +1,4 @@
-import { Scope } from "./scope";
+import { CallerType, Scope, ToolType } from "./enum";
 import { State } from "./state";
 import { Tool } from "./tool";
 
@@ -64,7 +64,9 @@ export const retrievers: Record<string, Tool> = {
         parameters: { type: "object", properties: {}, required: [] },
       },
     },
-    type: "retriever",
+    type: ToolType.Retriever,
+    scope: Scope.Any,
+    caller: CallerType.Any,
     implementation: getSelectedText,
   },
   getCalendarEvents: {
@@ -85,7 +87,9 @@ export const retrievers: Record<string, Tool> = {
         },
       },
     },
-    type: "retriever",
+    type: ToolType.Retriever,
+    scope: Scope.Any,
+    caller: CallerType.Any,
     implementation: getCalendarEvents,
   },
 };
