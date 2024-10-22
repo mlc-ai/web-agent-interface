@@ -126,6 +126,7 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
+    type: "action",
     implementation: replaceSelectedText,
   },
   appendTextToDocument: {
@@ -147,6 +148,7 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
+    type: "action",
     implementation: appendTextToDocument,
   },
   createCalendarEvent: {
@@ -173,6 +175,7 @@ export const actions: Record<string, Tool> = {
         },
       },
     },
+    type: "action",
     implementation: createCalendarEvent,
   },
 };

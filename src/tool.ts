@@ -28,5 +28,6 @@ export interface Tool {
       };
     };
   };
+  type: "retriever" | "action";
   implementation: (state: State, parameters: any) => void;
 }

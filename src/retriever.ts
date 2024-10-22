@@ -63,6 +63,7 @@ export const retrievers: Record<string, Tool> = {
         parameters: { type: "object", properties: {}, required: [] },
       },
     },
+    type: "retriever",
     implementation: getSelectedText,
   },
   getCalendarEvents: {
@@ -83,6 +84,7 @@ export const retrievers: Record<string, Tool> = {
         },
       },
     },
+    type: "retriever",
     implementation: getCalendarEvents,
   },
 };
