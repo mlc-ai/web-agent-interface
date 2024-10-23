@@ -9,7 +9,7 @@ export const getSelectedText = (state: State, parameters: {}): string => {
   return state.currentSelection.toString();
 };
 
-export const getPageTextContent = (): string => {
+export const getPageContent = (): string => {
   if (document) {
     return document.body.innerText || "";
   }
@@ -94,23 +94,23 @@ export const retrievers: Record<string, Tool> = {
     caller: CallerType.Any,
     implementation: getSelectedText,
   },
-  getPageTextContent: {
-    name: "getPageTextContent",
+  getPageContent: {
+    name: "getPageContent",
     displayName: "Get Page Content",
     description: "Fetch the entire text content of the current webpage.",
     schema: {
       type: "function",
       function: {
-        name: "getPageTextContent",
+        name: "getPageContent",
         description:
-          "getPageTextContent() -> str - Fetches the entire text content of the current webpage.\n\n Returns:\n    str: The entire text content of the webpage.",
+          "getPageContent() -> str - Fetches the entire text content of the current webpage.\n\n Returns:\n    str: The entire text content of the webpage.",
         parameters: { type: "object", properties: {}, required: [] },
       },
     },
     type: ToolType.Retriever,
     scope: Scope.Any,
     caller: CallerType.ContentScript,
-    implementation: getPageTextContent,
+    implementation: getPageContent,
   },
   getCalendarEvents: {
     name: "getGoogleCalendarEvents",
