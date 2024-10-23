@@ -9,6 +9,13 @@ export const getSelectedText = (state: State, parameters: {}): string => {
   return state.currentSelection.toString();
 };
 
+export const getPageTextContent = (): string => {
+  if (document) {
+    return document.body.innerText || "";
+  }
+  return "";
+};
+
 export async function getCalendarEvents(
   state: State,
   parameters: { token?: string },
@@ -26,7 +33,7 @@ export async function getCalendarEvents(
     } catch (e) {
       throw new Error(
         "getCalendarEvents: `token` must be specified in parameters or `identity` permission must be added to the extension manifest.\n" +
-          e
+          e,
       );
     }
   }
@@ -86,6 +93,24 @@ export const retrievers: Record<string, Tool> = {
     scope: Scope.Any,
     caller: CallerType.Any,
     implementation: getSelectedText,
+  },
+  getPageTextContent: {
+    name: "getPageTextContent",
+    displayName: "Get Page Content",
+    description: "Fetch the entire text content of the current webpage.",
+    schema: {
+      type: "function",
+      function: {
+        name: "getPageTextContent",
+        description:
+          "getPageTextContent() -> str - Fetches the entire text content of the current webpage.\n\n Returns:\n    str: The entire text content of the webpage.",
+        parameters: { type: "object", properties: {}, required: [] },
+      },
+    },
+    type: ToolType.Retriever,
+    scope: Scope.Any,
+    caller: CallerType.ContentScript,
+    implementation: getPageTextContent,
   },
   getCalendarEvents: {
     name: "getGoogleCalendarEvents",
