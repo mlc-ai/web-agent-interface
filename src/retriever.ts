@@ -11,8 +11,26 @@ export const getSelectedText = (state: State, parameters: {}): string => {
 
 export async function getCalendarEvents(
   state: State,
-  parameters: { token: string },
+  parameters: { token?: string },
 ) {
+  let { token } = parameters;
+
+  if (!token) {
+    // try to get token by using Chrome Identity API
+    try {
+      const authResult = await chrome.identity.getAuthToken({
+        interactive: true,
+        scopes: ["https://www.googleapis.com/auth/calendar.events.readonly"],
+      });
+      token = authResult.token;
+    } catch (e) {
+      throw new Error(
+        "getCalendarEvents: `token` must be specified in parameters or `identity` permission must be added to the extension manifest.\n" +
+          e
+      );
+    }
+  }
+
   try {
     // API URL to fetch calendar events
     const url =

@@ -4,7 +4,7 @@ import { Tool } from "./tool";
 
 export const replaceSelectedText = (
   state: State,
-  parameters: { newText: string | string[] },
+  parameters: { newText: string | string[] }
 ): void => {
   const { newText } = parameters;
   const selection = state.currentSelection;
@@ -17,7 +17,7 @@ export const replaceSelectedText = (
     if (Array.isArray(newText)) {
       const fragment = document.createDocumentFragment();
       newText.forEach((text) =>
-        fragment.appendChild(document.createTextNode(text)),
+        fragment.appendChild(document.createTextNode(text))
       );
       range.insertNode(fragment);
     } else {
@@ -29,7 +29,7 @@ export const replaceSelectedText = (
 
 export const appendTextToDocument = (
   state: State,
-  parameters: { text: string },
+  parameters: { text: string }
 ): void => {
   if (window.location.hostname.includes("overleaf.com")) {
     const { text } = parameters;
@@ -49,18 +49,36 @@ export const appendTextToDocument = (
   }
 };
 
-export async function createCalendarEvent(
+export async function createGoogleCalendarEvent(
   state: State,
   parameters: {
-    token: string;
+    token?: string;
     summary: string;
     location?: string;
     description?: string;
     startDateTime: string;
     endDateTime: string;
     timeZone?: string;
-  },
+  }
 ) {
+  let { token } = parameters;
+
+  if (!token) {
+    // try to get token by using Chrome Identity API
+    try {
+      const authResult = await chrome.identity.getAuthToken({
+        interactive: true,
+        scopes: ["https://www.googleapis.com/auth/calendar.events"],
+      });
+      token = authResult.token;
+    } catch (e) {
+      throw new Error(
+        "createGoogleCalendarEvent: `token` must be specified in parameters or `identity` permission must be added to the extension manifest.\n" +
+          e
+      );
+    }
+  }
+
   try {
     const timeZone =
       parameters.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -90,7 +108,7 @@ export async function createCalendarEvent(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(event),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -181,8 +199,8 @@ export const actions: Record<string, Tool> = {
       },
     },
     type: ToolType.Action,
-    scope: [Scope.Overleaf],
+    scope: Scope.Any,
     caller: CallerType.Any,
-    implementation: createCalendarEvent,
+    implementation: createGoogleCalendarEvent,
   },
 };
