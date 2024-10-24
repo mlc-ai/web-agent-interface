@@ -65,7 +65,9 @@ export async function createGoogleCalendarEvent(
 
   if (!token) {
     // try to get token by using Chrome Identity API
-    console.log("`token` not specified, trying retrieving through Google identity API OAuth flow...")
+    console.log(
+      "`token` not specified, trying retrieving through Google identity API OAuth flow...",
+    );
     try {
       const authResult = await chrome.identity.getAuthToken({
         interactive: true,
