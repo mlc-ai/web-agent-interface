@@ -112,7 +112,7 @@ export const retrievers: Record<string, Tool> = {
     caller: CallerType.ContentScript,
     implementation: getPageContent,
   },
-  getCalendarEvents: {
+  getGoogleCalendarEvents: {
     name: "getGoogleCalendarEvents",
     displayName: "Get Google Calendar Events",
     description:

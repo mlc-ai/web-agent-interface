@@ -174,7 +174,7 @@ export const actions: Record<string, Tool> = {
     caller: CallerType.ContentScript,
     implementation: appendTextToDocument,
   },
-  createCalendarEvent: {
+  createGoogleCalendarEvent: {
     name: "createGoogleCalendarEvent",
     displayName: "Create Google Calendar Event",
     description: "Create a new event in the user's primary Google Calendar.",
