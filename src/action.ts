@@ -65,6 +65,7 @@ export async function createGoogleCalendarEvent(
 
   if (!token) {
     // try to get token by using Chrome Identity API
+    console.log("`token` not specified, trying retrieving through Google identity API OAuth flow...")
     try {
       const authResult = await chrome.identity.getAuthToken({
         interactive: true,
@@ -90,11 +91,11 @@ export async function createGoogleCalendarEvent(
       description: parameters.description || "",
       start: {
         dateTime: parameters.startDateTime,
-        timeZone, // Adjust this according to the user's time zone
+        timeZone,
       },
       end: {
         dateTime: parameters.endDateTime,
-        timeZone, // Adjust this according to the user's time zone
+        timeZone,
       },
     };
 
@@ -104,7 +105,7 @@ export async function createGoogleCalendarEvent(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${parameters.token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(event),

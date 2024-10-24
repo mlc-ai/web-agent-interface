@@ -47,7 +47,7 @@ export async function getCalendarEvents(
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${parameters.token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
