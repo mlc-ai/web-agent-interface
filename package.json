@@ -1,7 +1,7 @@
 {
   "name": "@mlc-ai/web-agent-interface",
-  "version": "0.1.0",
-  "description": "A generic library for web interaction",
+  "version": "0.0.1",
+  "description": "A tool library for LLM agent in browsers to interact with the web.",
   "main": "lib/index.js",
   "type": "module",
   "scripts": {
