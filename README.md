@@ -2,13 +2,16 @@
 
 ## Overview
 
-The `web-agent-interface` library provides an API to interact with text selections, modifications, and other functionalities across different web platforms like Overleaf, Google Docs, and Google Calendar. This library makes it easier to customize your tools.
+The `web-agent-interface` library provides tools to LLM agents in browsers to interact with different websites.
 
-## Supported Platforms
+**Note**: The project is still in development phase. It has limited coverage and its APIs may change.
 
-- **Overleaf**: Manipulate text selections and content within Overleaf documents.
-<!-- - **Google Docs (GDoc)**: Interact with text selections and modifications in Google Docs.
-- **Google Calendar (GCal)**: Integrate and manage events on Google Calendar. -->
+## Supported Tools
+
+- **General DOM Operations**: Get page content and user selection.
+- **Overleaf**: Edit Overleaf documents.
+- **Google Calendar (GCal)**: Read and create events on Google Calendar.
+<!-- - **Google Docs (GDoc)**: Interact with text selections and modifications in Google Docs. -->
 
 ## Installation
 
@@ -30,26 +33,37 @@ To install and build the library, follow these steps:
 
 ## Usage
 
-### 1. Initialize the page handler in content script
+### 1. Initialize State
 
   ```javascript
-  import { initHandler } from '@mlc-ai/web-agent-interface';
+  import { State } from '@mlc-ai/web-agent-interface';
 
-  const handler = initHandler();
+  const state = new State();
   ```
 
 
-### 2. Get Available Tools
+### 2. Import Tools
 
   ```javascript
-  import { getTools } from '@mlc-ai/web-agent-interface';
-
-  const availableTools = getTools();
+  import { tool, retriever, action } from '@mlc-ai/web-agent-interface';
   ```
 
-### 3. Handling Tool Use
+### 3. Give Tool Description to Prompt
 
   ```javascript
-  const observation = handler.handleToolCall(toolName, parameters);
+  const system_prompt = `
+  You are a helpful AI agent.
+
+  You have the following tools to use:
+
+  ${tools.map((t) => JSON.stringify(t.schema)).join(",\n")}
+  `
+  ```
+
+### 3. Call Tool Function to Get Observation
+
+  ```javascript
+  const { tool_name, parameters } = extractToolCall(llm_response);
+  const observation = tool[tool_name].implementation(state, parameters);
   console.log("Got observation:", observation);
   ```
