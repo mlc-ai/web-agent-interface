@@ -1,13 +1,16 @@
 import { CallerType, Scope, ToolType } from "./enum";
-import { State } from "./state";
 import { Tool } from "./tool";
+import { isOverleafDocument } from "./util";
 
-export const replaceSelectedText = (
-  state: State,
-  parameters: { newText: string | string[] },
-): void => {
+import * as Overleaf from "./overleaf/action";
+
+export * as Overleaf from "./overleaf/action";
+
+export const replaceSelectedText = (parameters: {
+  newText: string | string[];
+}): void => {
   const { newText } = parameters;
-  const selection = state.currentSelection;
+  const selection = window.getSelection();
   if (!newText || !selection) {
     return;
   }
@@ -17,7 +20,7 @@ export const replaceSelectedText = (
     if (Array.isArray(newText)) {
       const fragment = document.createDocumentFragment();
       newText.forEach((text) =>
-        fragment.appendChild(document.createTextNode(text)),
+        fragment.appendChild(document.createTextNode(text))
       );
       range.insertNode(fragment);
     } else {
@@ -27,46 +30,32 @@ export const replaceSelectedText = (
   }
 };
 
-export const appendTextToDocument = (
-  state: State,
-  parameters: { text: string },
-): void => {
-  if (window.location.hostname.includes("overleaf.com")) {
-    const { text } = parameters;
-    const editorElement = document.querySelector(".cm-content");
-    if (editorElement) {
-      const textNode = document.createTextNode(text);
-      editorElement.appendChild(textNode);
-
-      // Scroll to bottom
-      const scroller = document.querySelector(".cm-scroller");
-      if (scroller) {
-        scroller.scrollTo({ top: scroller.scrollHeight, behavior: "smooth" });
-      }
-    }
+export const insertText = (parameters: {
+  textToInsert: string;
+  position: "beginning" | "end" | "cursor";
+}): void => {
+  if (isOverleafDocument()) {
+    return Overleaf.insertText(parameters);
   } else {
-    throw new Error("Not Implemented");
+    throw new Error("Action is not implemented");
   }
 };
 
-export async function createGoogleCalendarEvent(
-  state: State,
-  parameters: {
-    token?: string;
-    summary: string;
-    location?: string;
-    description?: string;
-    startDateTime: string;
-    endDateTime: string;
-    timeZone?: string;
-  },
-) {
+export async function createGoogleCalendarEvent(parameters: {
+  token?: string;
+  summary: string;
+  location?: string;
+  description?: string;
+  startDateTime: string;
+  endDateTime: string;
+  timeZone?: string;
+}) {
   let { token } = parameters;
 
   if (!token) {
     // try to get token by using Chrome Identity API
     console.log(
-      "`token` not specified, trying retrieving through Google identity API OAuth flow...",
+      "`token` not specified, trying retrieving through Google identity API OAuth flow..."
     );
     try {
       const authResult = await chrome.identity.getAuthToken({
@@ -77,7 +66,7 @@ export async function createGoogleCalendarEvent(
     } catch (e) {
       throw new Error(
         "createGoogleCalendarEvent: `token` must be specified in parameters or `identity` permission must be added to the extension manifest.\n" +
-          e,
+          e
       );
     }
   }
@@ -111,7 +100,7 @@ export async function createGoogleCalendarEvent(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(event),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -153,29 +142,34 @@ export const actions: Record<string, Tool> = {
     caller: CallerType.ContentScript,
     implementation: replaceSelectedText,
   },
-  appendTextToDocument: {
-    name: "appendTextToDocument",
-    displayName: "Append Text To Document",
-    description: "Append text content to the end of the document.",
+  insertText: {
+    name: "insertText",
+    displayName: "Insert Text",
+    description:
+      "Insert the specified text at a given position relative to the document: at the beginning, end, or cursor position.",
     schema: {
       type: "function",
       function: {
-        name: "appendTextToDocument",
+        name: "insertText",
         description:
-          "appendTextToDocument(text: str) - Add some text content to the end of the document.\\n\\n Args:\\n    text (str): Text content to be added to the end of the document.",
+          "insertText(parameters: { textToInsert: str, position: 'beginning' | 'end' | 'cursor' }) - Insert text into the document at the specified position.\\n\\n Args:\\n    textToInsert (str): The text content to be inserted.\\n    position ('beginning' | 'end' | 'cursor'): Where to insert the text (beginning of the document, end of the document, or at the cursor position).",
         parameters: {
           type: "object",
           properties: {
-            text: { type: "string" },
+            textToInsert: { type: "string" },
+            position: {
+              type: "string",
+              enum: ["beginning", "end", "cursor"],
+            },
           },
-          required: ["text"],
+          required: ["textToInsert", "position"],
         },
       },
     },
     type: ToolType.Action,
     scope: [Scope.Overleaf],
     caller: CallerType.ContentScript,
-    implementation: appendTextToDocument,
+    implementation: insertText,
   },
   createGoogleCalendarEvent: {
     name: "createGoogleCalendarEvent",

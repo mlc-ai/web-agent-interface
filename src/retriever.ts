@@ -1,25 +1,44 @@
+import * as Overleaf from "./overleaf/retriever";
 import { CallerType, Scope, ToolType } from "./enum";
-import { State } from "./state";
 import { Tool } from "./tool";
+import { isOverleafDocument } from "./util";
 
-export const getSelectedText = (state: State, parameters: {}): string => {
-  if (!state.currentSelection) {
+export * as Overleaf from "./overleaf/retriever";
+
+export const getSelectedText = (parameters: {}): string => {
+  const selection = window.getSelection();
+  if (!selection) {
     return "";
   }
-  return state.currentSelection.toString();
+  return selection.toString();
 };
 
-export const getPageContent = (): string => {
-  if (document) {
-    return document.body.innerText || "";
+export const getPageContext = (): string => {
+  const pageTitle = document.title;
+  const metaDescription = document.querySelector("meta[name='description']");
+  const pageDescription = metaDescription ? metaDescription.getAttribute("content") : "No description available";
+
+  let context: any = {
+    "url": window.location.href,
+    "title": pageTitle, 
+    "description": pageDescription,
   }
-  return "";
+  if (isOverleafDocument()) { 
+    context = {
+      ...context,
+      ...Overleaf.getEditorContext()
+    }
+  }
+  if (document) {
+    context = {
+      ...context,
+      content: document.body.innerText || "",
+    }
+  }
+  return JSON.stringify(context);
 };
 
-export async function getCalendarEvents(
-  state: State,
-  parameters: { token?: string },
-) {
+export async function getCalendarEvents(parameters: { token?: string }) {
   let { token } = parameters;
 
   if (!token) {
@@ -33,7 +52,7 @@ export async function getCalendarEvents(
     } catch (e) {
       throw new Error(
         "getCalendarEvents: `token` must be specified in parameters or `identity` permission must be added to the extension manifest.\n" +
-          e,
+          e
       );
     }
   }
@@ -94,23 +113,23 @@ export const retrievers: Record<string, Tool> = {
     caller: CallerType.Any,
     implementation: getSelectedText,
   },
-  getPageContent: {
-    name: "getPageContent",
-    displayName: "Get Page Content",
-    description: "Fetch the entire text content of the current webpage.",
+  getPageContext: {
+    name: "getPageContext",
+    displayName: "Get Page Context",
+    description: "Get context information regarding the current page which the user is currently viewing.",
     schema: {
       type: "function",
       function: {
-        name: "getPageContent",
+        name: "getPageContext",
         description:
-          "getPageContent() -> str - Fetches the entire text content of the current webpage.\n\n Returns:\n    str: The entire text content of the webpage.",
+          "getPageContext() -> str - Get context information regarding the current page which the user is currently viewing.\n\n Returns:\n    str: The entire text content of the webpage.",
         parameters: { type: "object", properties: {}, required: [] },
       },
     },
     type: ToolType.Retriever,
     scope: Scope.Any,
     caller: CallerType.ContentScript,
-    implementation: getPageContent,
+    implementation: getPageContext,
   },
   getGoogleCalendarEvents: {
     name: "getGoogleCalendarEvents",
